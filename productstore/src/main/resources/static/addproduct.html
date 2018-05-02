@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add product</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+<style>
+body {
+	background-color: antiquewhite;
+}
+
+#product_form {
+	text-align: -webkit-center;
+	background-color: cadetblue;
+	width: 35vw;
+	height: 90vh;
+	margin-left: 430px;
+	margin-top: 50px;
+}
+
+form {
+	width: 30vw;
+	text-align: -webkit-left;
+	display: inline-block;
+}
+</style>
+</head>
+<body>
+	<div id="product_form">
+		<h1>Add product</h1>
+		<form>
+			<div class="form-group">
+				<label for="product_id">Product ID:</label> <input type="number"
+					class="form-control" id="product_id" placeholder="Product ID"
+					name="product_id" onkeypress='validate(event)' />
+			</div>
+			<div class="form-group">
+				<label for="product_name ">Product Name:</label> <input type="text"
+					class="form-control" id="product_name" placeholder="Product Name"
+					name="product_name" onkeypress="return onlyAlphabets(event,this);" />
+			</div>
+			<div class="form-group">
+				<label for="product_desc ">Product Description:</label> <input
+					type="text" class="form-control" id="product_desc"
+					placeholder="Product Description" name="product_desc"
+					onkeypress="return onlyAlphabets(event,this);" />
+			</div>
+			<div class="form-group">
+				<label for="relatedproducts">Related Products</label> <input
+					type="text" class="form-control" id="rel_products"
+					placeholder="Related Products" name="relproducts" />
+			</div>
+
+			<div class="form-group">
+				<label for="product_image ">Image:</label> <input type="url"
+					name="product_image" id="product_image" class="form-control" />
+			</div>
+
+			<button type="submit" class="btn btn-primary" onclick="addProduct()">Add</button>
+			<a type="submit" class="btn btn-warning" href="/home.html">cancel</a>
+		</form>
+	</div>
+</body>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<script>
+	function addProduct() {
+		var id = $('#product_id').val();
+		var product_name = $('#product_name').val();
+		var product_desc = $('#product_desc').val();
+		var rel_products = $("#rel_products").val();
+		var product_image = $('#product_image').val();
+
+		var data = {
+			product_id : id,
+			name : product_name,
+			description : product_desc,
+			related_products : rel_products,
+			image_url : product_image
+		}
+
+		if (id.trim() == '') {
+			alert("Please Enter Your Product ID");
+			$("#product_id").focus();
+			return false;
+		} else if (product_name.trim() == '') {
+			alert("Please type your Product Name");
+			$("#product_name").focus();
+			return false;
+		} else if (product_desc.trim() == '') {
+			alert("Please Enter your Product Description");
+			$("#product_desc").focus();
+			return false;
+		} else if (rel_products.trim() == '') {
+			alert("Please Enter your Product Description");
+			$("#rel_products").focus();
+			return false;
+		} else if (product_image.trim() == '') {
+			alert("Please Add your Product Image");
+			$("#product_image").focus();
+			return false;
+		} else {
+			//alert('Jdata');
+			$
+					.ajax({
+						url : '/products',
+						type : 'POST',
+						data : JSON.stringify(data),
+						contentType : 'application/json',
+
+						success : function(response) {
+							//	alert(response);
+							if (response != -1)
+								window.location.href = '/home.html';
+							else
+								alert("Product Id Already Exists.Please enter a Unique Product Id");
+						},
+						error : function(jqXHR, textStatus, errorThrown) {
+							alert("Opps!! Error occured " + errorThrown);
+
+						}
+					});
+		}
+	}
+
+	function validate(evt) {
+		var theEvent = evt || window.event;
+		var key = theEvent.keyCode || theEvent.which;
+		key = String.fromCharCode(key);
+		var regex = /[0-9]|\./;
+		if (!regex.test(key)) {
+			theEvent.returnValue = false;
+			if (theEvent.preventDefault)
+				theEvent.preventDefault();
+		}
+	}
+
+	function onlyAlphabets(e, t) {
+		try {
+			if (window.event) {
+				var charCode = window.event.keyCode;
+			} else if (e) {
+				var charCode = e.which;
+			} else {
+				return true;
+			}
+			if ((charCode > 64 && charCode < 91)
+					|| (charCode > 96 && charCode < 123))
+				return true;
+			else
+				return false;
+		} catch (err) {
+			alert(err.Description);
+		}
+	}
+</script>
+</html>

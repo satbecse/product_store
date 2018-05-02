@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Home</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+body {
+	background-color: antiquewhite;
+}
+
+h1 {
+	text-align: center;
+	border: 3px solid green;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th, td {
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2
+}
+
+th {
+	background-color: #4CAF50;
+	color: white;
+}
+</style>
+</head>
+<body class="container">
+	<div>
+		<h1>Welcome to Product Store</h1>
+		<a class="btn btn-primary" href="addproduct.html">Add product</a> <a
+			class="btn btn-primary" href="index.html">LogOut</a>
+		<table id="containerTable">
+			<tr>
+				<th>Product Id</th>
+				<th>Prod_Name</th>
+				<th>Description</th>
+				<th>Related_Products</th>
+				<th>Image</th>
+				<th>Update Product</th>
+				<th>Delete Product</th>
+			</tr>
+		</table>
+	</div>
+</body>
+
+
+<script id="trTemplate" type="text/x-jquery-tmpl">  
+        
+            <tr id=${product_id}>
+                    <td>${product_id}</td>
+                    <td>${name}</td>
+                    <td>${description}</td>
+                    <td>${related_products}</td>
+                    <td><img src=${image_url} alt="Image_Not_Loaded" height="30px" width="30px"> </td> 
+                    <td><a href="/updateproduct.html?id=${product_id}">Update</a></td>
+                    <td><a class="btn" onclick="deleteProduct(${product_id})">Delete</a>
+                    <td> </td>      
+            </tr>
+</script>
+
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+
+<script type="text/javascript">
+	function getproduct() {
+		$.ajax({
+			url : '/products',
+			type : "GET",
+			success : function(data) {        
+				$('#trTemplate').tmpl(data).appendTo('#containerTable');
+			},
+			error : function() {
+				alert("error occured");
+			}
+		});
+	}
+	getproduct();
+	
+	function deleteProduct(id_to_be_deleted){
+		//var id = $('#product_id').val();
+		//var id = $(this ~ tr).attr("id");
+		$.ajax({
+			url : '/products/'+id_to_be_deleted,
+			type: 'DELETE',
+			success : function(){
+				//alert(id_to_be_deleted);
+				document.getElementById(id_to_be_deleted).remove();
+			},
+			error:function(){
+				alert("Product Deletion Failed");
+			}
+			
+		});
+	}
+	
+</script>
+</html>

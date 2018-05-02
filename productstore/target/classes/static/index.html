@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome Page</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+<style>
+body {
+	background-color: antiquewhite;
+}
+
+#login_form {
+	text-align: -webkit-center;
+	background-color: cadetblue;
+	width: 35vw;
+	height: 50vh;
+	margin-left: 430px;
+	margin-top: 50px;
+}
+
+form {
+	display: inline-block;
+	width: 30vw;
+	text-align: -webkit-left;
+}
+</style>
+</head>
+<body>
+	<div id="login_form">
+		<h1>Login</h1>
+		<form>
+			<div class="form-group">
+				<label for="username">Username:</label> <input type="text"
+					class="form-control" id="username" placeholder="Username"
+					name="username" />
+			</div>
+			<div class="form-group">
+				<label for="password ">Password:</label> <input type="password"
+					class="form-control" id="password" placeholder="Password"
+					name="password" />
+			</div>
+
+			<button type="submit" class="btn btn-primary" onclick="loginMethod()">Submit</button>
+			<input type="reset" class="btn btn-info" />
+		</form>
+	</div>
+</body>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+<script>
+	function loginMethod() {
+		var un = $('#username').val();
+		var pw = $('#password').val();
+
+		var data = {
+			username : un,
+			password : pw,
+		}
+
+		if (un.trim() == '') {
+			alert("Please Enter Your Username");
+			$("#username").focus();
+			return false;
+		}
+
+		if (pw.trim() == '') {
+			alert("Please Enter Your Password");
+			$("#password").focus();
+			return false;
+		}
+
+		else {
+			alert(JSON.stringify(data));
+			$.ajax({
+
+				url : '/login',
+				type : 'POST',
+				data : JSON.stringify(data),
+				//data: 'username:'+un+'&password'+pw,
+				contentType : 'application/json',
+
+				success : function(response) {
+					var msg = "";
+					alert(response);
+					if (response == 0) {
+						window.location = "/home.html";
+					} else {
+						msg = "Invalid username and password!";
+						$("#message").html(msg);
+					}
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					alert("Oops!! Error occured " + errorThrown);
+				}
+
+			});
+		}
+	}
+</script>
+</html>
